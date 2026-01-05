@@ -31,6 +31,11 @@ public class Network {
      *  Notice that the method receives a String, and returns a User object. */
     public User getUser(String name) {
         //// Replace the following statement with your code
+        for(int i=0;i<userCount;i++){
+            if (users[i].getName().equals(name)){
+                return users[i];
+            }
+        }
         return null;
     }
 
@@ -39,24 +44,55 @@ public class Network {
     *  If the given name is already a user in this network, does nothing and returns false;
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
-        //// Replace the following statement with your code
+    if (userCount == users.length) {
         return false;
     }
+    if (getUser(name) != null) {
+        return false; 
+    }
+    users[userCount] = new User(name);
+    userCount++; 
+    return true;
+}
 
-    /** Makes the user with name1 follow the user with name2. If successful, returns true.
-     *  If any of the two names is not a user in this network,
-     *  or if the "follows" addition failed for some reason, returns false. */
-    public boolean addFollowee(String name1, String name2) {
-        //// Replace the following statement with your code
-        return false;
+    
+    public boolean addFollowee(String name1, String name2) {        
+        User u1 = getUser(name1);
+        User u2 = getUser(name2);
+        if (u1 == null || u2 == null) {
+            return false;
+        }
+        if (name1.equals(name2)) {
+            return false;
+        }
+        return u1.addFollowee(name2);
     }
     
-    /** For the user with the given name, recommends another user to follow. The recommended user is
-     *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        //// Replace the following statement with your code
+    User user = getUser(name);
+    
+    if (user == null) {
         return null;
     }
+    User bestPerson = null;
+    int maxMutual = -1; 
+    for (int i = 0; i < userCount; i++) {
+        User currentCandidate = users[i];
+        if (currentCandidate.getName().equals(name)) {
+        } else {
+            int count = user.countMutual(currentCandidate);
+            if (count > maxMutual) {
+                maxMutual = count;   
+                bestPerson = currentCandidate; 
+            }
+        }
+    }
+    if (bestPerson == null) {
+        return null;
+    } else {
+        return bestPerson.getName();
+    }
+}
 
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
