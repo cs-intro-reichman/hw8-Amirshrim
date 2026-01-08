@@ -97,21 +97,23 @@ public class Network {
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
-    // 1. טיפול במקרה של רשת ריקה (Case 2 בלוג השגיאות)
     if (userCount == 0) {
         return null;
     }
-
     String popularName = null;
     int maxFollowers = -1;
-
-    for (int i = 0; i < users.length; i++) {
+    for (int i = 0; i < userCount; i++) {
         if (users[i] != null) {
-            String currentName = users[i].getName();            
-            int currentFollowers = followeeCount(currentName); 
-            if (currentFollowers > maxFollowers) {
-                maxFollowers = currentFollowers;
-                popularName = currentName;
+            String candidateName = users[i].getName();
+            int currentFollowersCount = 0;
+            for (int j = 0; j < userCount; j++) {
+                if (users[j] != null && users[j].follows(candidateName)) {
+                    currentFollowersCount++;
+                }
+            }
+            if (currentFollowersCount > maxFollowers) {
+                maxFollowers = currentFollowersCount;
+                popularName = candidateName;
             }
         }
     }
@@ -134,14 +136,12 @@ public class Network {
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
-       //// Replace the following statement with your code
-       String str = "";
-       for(int i=0;i<userCount;i++){
-        if (users[i]==null){}
-        else { 
-            str += "/n" + users[i].toString();
+    String str = "Network:"; 
+    for (int i = 0; i < userCount; i++) { // השתמש ב-userCount כדי להימנע מריצה על nulls
+        if (users[i] != null) {
+            str += "\n" + users[i].toString(); // שים לב ל- \n
         }
-       }
-       return str;
     }
+    return str;
+}
 }
