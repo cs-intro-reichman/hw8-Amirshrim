@@ -97,19 +97,26 @@ public class Network {
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
-        //// Replace the following statement with your code
-        int max= followeeCount(users[0].getName());
-        int index = 0;
-        for (int i=1; i<users.length;i++){
-            int current = followeeCount(users[i].getName());{
-                if(current>= max){
-                    max = current;
-                    index = i;
-                }
+    // 1. טיפול במקרה של רשת ריקה (Case 2 בלוג השגיאות)
+    if (userCount == 0) {
+        return null;
+    }
+
+    String popularName = null;
+    int maxFollowers = -1;
+
+    for (int i = 0; i < users.length; i++) {
+        if (users[i] != null) {
+            String currentName = users[i].getName();            
+            int currentFollowers = followeeCount(currentName); 
+            if (currentFollowers > maxFollowers) {
+                maxFollowers = currentFollowers;
+                popularName = currentName;
             }
         }
-        return users[index].getName();
     }
+    return popularName;
+}
 
     /** Returns the number of times that the given name appears in the follows lists of all
      *  the users in this network. Note: A name can appear 0 or 1 times in each list. */
@@ -128,6 +135,13 @@ public class Network {
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
        //// Replace the following statement with your code
-       return null;
+       String str = "";
+       for(int i=0;i<userCount;i++){
+        if (users[i]==null){}
+        else { 
+            str += "/n" + users[i].toString();
+        }
+       }
+       return str;
     }
 }
